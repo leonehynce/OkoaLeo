@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "643371354183",
+    "firebase_url": "https://okoaleo-9cc93-default-rtdb.firebaseio.com",
+    "project_id": "okoaleo-9cc93",
+    "storage_bucket": "okoaleo-9cc93.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643371354183:android:42e37fad4c24d6992bc962",
+        "android_client_info": {
+          "package_name": "com.leone.okoleo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIgbhIcLkzQlJoEs5Lb0FY4x5TugTm-7Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

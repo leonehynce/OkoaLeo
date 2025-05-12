@@ -1,0 +1,15 @@
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/ProductScanScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/RewardsScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/navigation/AppNavHost.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/SettingsScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leone/okoleo/ui/screens/NavController.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/LoginScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/RegisterScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/MainActivity.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/HomeScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/ui/theme/Theme.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/navigation/Routes.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/ui/theme/Color.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/ui/theme/Type.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/ProfileScreen.kt
+/home/emobilis/Desktop/OkoaLeol/app/src/main/java/com/leo/okoaleo/Screens/SearchScreen.kt
