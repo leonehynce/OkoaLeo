@@ -4,7 +4,7 @@
             "outputFile": "com.leone.okoleo.app-mergeDebugResources-60:/values-id/values-id.xml",
             "map": [
                 {
-                    "source": "/home/emobilis/.gradle/caches/8.11.1/transforms/5978199e352a8930b0d9738d89ca61e6/transformed/zxing-android-embedded-4.3.0/res/values-id/values-id.xml",
+                    "source": "C:\\Users\\USER\\.gradle\\caches\\8.11.1\\transforms\\5978199e352a8930b0d9738d89ca61e6\\transformed\\zxing-android-embedded-4.3.0\\res\\values-id\\values-id.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",

@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,15 +18,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.leo.okoaleo.ui.theme.OkoaLeoTheme
-import com.leone.okoleo.R  // Make sure you import your R class properly
+import com.leone.okoleo.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    navController: NavHostController,
     userName: String = "John Doe",
     userEmail: String = "john@example.com",
-    onBack: () -> Unit,
-    navController: NavHostController
+    userProfileImage: String = "R.drawable.default_profile",
+    onBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -52,20 +52,23 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.default_profile),
+                painter = painterResource(id = userProfileImage.toIntOrNull() ?: R.drawable.default_profile),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             Text(
                 text = userName,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = userEmail,
                 fontSize = 16.sp,
@@ -79,12 +82,15 @@ fun ProfileScreen(
 @Composable
 fun ProfileScreenPreview() {
     OkoaLeoTheme {
-        val navController = rememberNavController()
-        ProfileScreen(
-            userName = "Jane Doe",
-            userEmail = "jane@example.com",
-            onBack = {},
-            navController = navController
-        )
+        Surface {
+            val navController = rememberNavController()
+            ProfileScreen(
+                navController = navController,
+                userName = "Jane Doe",
+                userEmail = "jane@example.com",
+                userProfileImage = "R.drawable.default_profile",
+                onBack = { navController.popBackStack() }
+            )
+        }
     }
 }

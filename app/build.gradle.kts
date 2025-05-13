@@ -53,6 +53,17 @@ android {
 }
 
 dependencies {
+    implementation (libs.androidx.ui.v131) // or the latest Compose UI version
+    implementation (libs.androidx.material3.v100) // Material3 UI components
+
+    // Icons dependency for visibility toggling
+    implementation (libs.androidx.material.icons.extended) // for visibility icons (if not already present)
+
+    // Jetpack Compose navigation (if you're using navigation)
+    implementation (libs.androidx.navigation.compose.v240)
+
+    // Optional dependencies for other functionality
+    implementation (libs.androidx.runtime.livedata)
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
@@ -79,6 +90,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
 
     // Testing
     testImplementation(libs.junit)

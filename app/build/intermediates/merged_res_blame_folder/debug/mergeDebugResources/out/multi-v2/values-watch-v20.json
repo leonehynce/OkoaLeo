@@ -4,7 +4,7 @@
             "outputFile": "com.leone.okoleo.app-mergeDebugResources-60:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
-                    "source": "/home/emobilis/.gradle/caches/8.11.1/transforms/a31311a607239623aeefc7a9344c045c/transformed/play-services-auth-20.7.0/res/values-watch-v20/values.xml",
+                    "source": "C:\\Users\\USER\\.gradle\\caches\\8.11.1\\transforms\\a31311a607239623aeefc7a9344c045c\\transformed\\play-services-auth-20.7.0\\res\\values-watch-v20\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11",
                         "startColumns": "0,0,0,0,0,0,0,0",

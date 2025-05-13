@@ -9,18 +9,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
-import com.leo.okoaleo.ui.theme.OkoaLeoTheme
 
 data class Product(
     val name: String,
@@ -31,7 +27,6 @@ data class Product(
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ProductScanScreen(
-    onBack: () -> Unit,
     navController: NavHostController
 ) {
     var product by remember { mutableStateOf<Product?>(null) }
@@ -54,7 +49,7 @@ fun ProductScanScreen(
             TopAppBar(
                 title = { Text("Scan Product") },
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -133,16 +128,4 @@ private fun mockProductLookup(barcode: String): Product {
         barcode = barcode,
         price = 19.99
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProductScanScreenPreview() {
-    OkoaLeoTheme {
-        val navController = rememberNavController()
-        ProductScanScreen(
-            onBack = {},
-            navController = navController
-        )
-    }
 }

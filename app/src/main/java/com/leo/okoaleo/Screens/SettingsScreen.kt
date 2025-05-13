@@ -21,17 +21,11 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.leo.okoaleo.ui.theme.OkoaLeoTheme
-import androidx.navigation.compose.rememberNavController
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 
 @Composable
-fun SettingsScreen(
-    navController: NavHostController,
-    onLogout: () -> Unit = {},
-    onBack: () -> Unit
-) {
+fun SettingsScreen(navController: NavHostController) {
     val context = LocalContext.current
     val firebaseAuth = FirebaseAuth.getInstance()
 
@@ -42,6 +36,7 @@ fun SettingsScreen(
     var showCurrentPassword by remember { mutableStateOf(false) }
     var showNewPassword by remember { mutableStateOf(false) }
     var showConfirmPassword by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -54,7 +49,13 @@ fun SettingsScreen(
         Text("Account", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = onLogout, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = {
+            firebaseAuth.signOut()
+            Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+            navController.navigate("login") {
+                popUpTo("settings") { inclusive = true }
+            }
+        }, modifier = Modifier.fillMaxWidth()) {
             Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
             Spacer(Modifier.width(8.dp))
             Text("Logout")
@@ -62,7 +63,7 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()) {
             Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             Spacer(Modifier.width(8.dp))
             Text("Back")
@@ -141,15 +142,23 @@ fun SettingsScreen(
                         Toast.makeText(context, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
                     }
                     else -> {
+                        // Set isLoading to true while updating the password
+                        isLoading = true
                         changePassword(firebaseAuth, currentPassword, newPassword, context) {
                             isPasswordChanged = it
+                            isLoading = false // Reset loading state after the password change
                         }
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading // Disable button when loading
         ) {
-            Text("Change Password")
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text("Change Password")
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -213,7 +222,7 @@ fun changePassword(
                         Toast.makeText(context, "Password changed successfully", Toast.LENGTH_SHORT).show()
                     } else {
                         onPasswordChanged(false)
-                        Toast.makeText(context, "Password change failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Password change failed: ${updateTask.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
@@ -229,10 +238,6 @@ fun changePassword(
 fun SettingsScreenPreview() {
     OkoaLeoTheme {
         val navController = rememberNavController()
-        SettingsScreen(
-            navController = navController,
-            onBack = {},
-            onLogout = {}
-        )
+        SettingsScreen(navController = navController)
     }
 }

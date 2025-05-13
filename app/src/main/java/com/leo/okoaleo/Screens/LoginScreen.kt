@@ -1,81 +1,48 @@
-package com.leone.okoleo.ui.screens
+package com.leo.okoaleo.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
-) {
+fun LoginScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
-    val scope = rememberCoroutineScope()
-    val auth = Firebase.auth
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome Back",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                text = "Login",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Login to continue",
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            errorMessage?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text("Email Address") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = { email = it.trim() },
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = errorMessage != null,
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -84,58 +51,90 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth()
+                isError = errorMessage != null,
+                singleLine = true
             )
+
+            errorMessage?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
                     if (email.isBlank() || password.isBlank()) {
-                        errorMessage = "Please fill all fields"
+                        errorMessage = "Email and password cannot be empty"
+                        Log.w("LoginScreen", "Login attempt with empty fields")
+                        return@Button
+                    }
+
+                    if (!email.contains("@") || !email.contains(".")) {
+                        errorMessage = "Invalid email format"
+                        Log.w("LoginScreen", "Invalid email format: $email")
+                        return@Button
+                    }
+
+                    if (password.length < 6) {
+                        errorMessage = "Password must be at least 6 characters"
+                        Log.w("LoginScreen", "Password too short")
                         return@Button
                     }
 
                     isLoading = true
                     errorMessage = null
 
-                    scope.launch {
-                        try {
-                            auth.signInWithEmailAndPassword(email, password).await()
-                            onLoginSuccess()
-                        } catch (e: FirebaseAuthException) {
-                            // Handle Firebase specific error
-                            errorMessage = e.localizedMessage ?: "Login failed"
-                        } catch (e: Exception) {
-                            // Handle general errors (e.g., network issues)
-                            errorMessage = e.localizedMessage ?: "Login failed"
-                        } finally {
+                    val auth = FirebaseAuth.getInstance()
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
                             isLoading = false
+                            if (task.isSuccessful) {
+                                Log.d("LoginScreen", "Login successful for $email")
+                                try {
+                                    navController.navigate("home") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                    Log.d("LoginScreen", "Navigated to home")
+                                } catch (e: Exception) {
+                                    errorMessage = "Navigation error: ${e.message}"
+                                    Log.e("LoginScreen", "Navigation failed", e)
+                                }
+                            } else {
+                                val exception = task.exception
+                                errorMessage = when (exception) {
+                                    is FirebaseAuthException -> {
+                                        when (exception.errorCode) {
+                                            "ERROR_INVALID_EMAIL" -> "Invalid email format"
+                                            "ERROR_WRONG_PASSWORD" -> "Incorrect password"
+                                            "ERROR_USER_NOT_FOUND" -> "User not found"
+                                            else -> "Login failed: ${exception.message}"
+                                        }
+                                    }
+                                    else -> "Login failed: ${exception?.message}"
+                                }
+                                Log.e("LoginScreen", "Login failed", exception)
+                            }
                         }
-                    }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                modifier = Modifier.fillMaxWidth(),
                 enabled = !isLoading
             ) {
                 if (isLoading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp
+                    )
                 } else {
-                    Text("Login", color = Color.White, fontSize = 18.sp)
+                    Text("Login")
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Don't have an account? Register",
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.clickable { onNavigateToRegister() }
-            )
         }
     }
 }
